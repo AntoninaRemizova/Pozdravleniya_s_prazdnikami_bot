@@ -52,7 +52,6 @@ namespace Pozdravleniya_s_prazdnikami_bot
         }
         static Chat GetUserChat(string reqChatName)
         {
-            List<Chat> userChats = new List<Chat>();
             foreach (Chat chat in botChats)
             {
                 string chatName = chat.Title;
@@ -71,14 +70,15 @@ namespace Pozdravleniya_s_prazdnikami_bot
             var user = message.From;//от кого пришло сообщение
             var chat = message.Chat;
 
-
-
-            async Task SetSchedule()
+            async Task SetSchedule(Chat reqChat)
             {
-                
+                long reqChatId = reqChat.Id;
+                Console.WriteLine($"//Установка расписания");
+                Console.WriteLine($"Чат группы: {reqChat.Title}, {reqChatId}");
                 // Проход по всем чатам
                 foreach (var chatId in JsonFile.chatData.Keys)
                 {
+                    Console.WriteLine($"Чат с пользователем: {chatId}");
                     if (chatId == chat.Id)
                     {
                         // Получение расписания для текущего чата
@@ -90,7 +90,9 @@ namespace Pozdravleniya_s_prazdnikami_bot
                             DateTime scheduledTime = item.Date; // Получение времени отправки из расписания
 
                             // Установка часов и минут
-                            scheduledTime = new DateTime(scheduledTime.Year, scheduledTime.Month, scheduledTime.Day, 18, 47, 0);
+                            //scheduledTime = DateTime.Now.Date.AddHours(DateTime.Now.Hour).AddMinutes(DateTime.Now.Minute);
+                            //scheduledTime = new DateTime(scheduledTime.Year, scheduledTime.Month, scheduledTime.Day, 18, 47, 0);
+                            scheduledTime = new DateTime(scheduledTime.Year, scheduledTime.Month, scheduledTime.Day, DateTime.Now.Hour, DateTime.Now.Minute+1, 0);
 
                             // Если время отправки уже прошло, устанавливаем для следующего года
                             if (DateTime.Now > scheduledTime)
@@ -101,7 +103,7 @@ namespace Pozdravleniya_s_prazdnikami_bot
                             int dueTime = (int)timeToWait.TotalSeconds;
                             int period = (int)TimeSpan.FromDays(365).TotalSeconds;
 
-                            Timer timer = new Timer(async (obj) => await SendCongratulation(chatId, item.Congratulation, item.Username), null, dueTime, period); // Отправка сообщения каждый год в указанное время
+                            Timer timer = new Timer(async (obj) => await SendCongratulation(reqChatId, item.Congratulation, item.Username), null, dueTime, period); // Отправка сообщения каждый год в указанное время
                         }
                     }
                 }
@@ -111,8 +113,9 @@ namespace Pozdravleniya_s_prazdnikami_bot
                 try
                 {
                     string congratulation = $"{username}\n{text}";
-                    await SendMessage(chat, congratulation);
-                    Console.WriteLine($"Сообщение отправлено {congratulation}");
+                   // await SendMessage(chat, congratulation);
+                    await bot.SendTextMessageAsync(chatId, congratulation);
+                    Console.WriteLine($"Сообщение отправлено {congratulation} в чат {chatId}");
                 }
                 catch (Exception ex)
                 {
@@ -180,8 +183,8 @@ namespace Pozdravleniya_s_prazdnikami_bot
                                                                 break;
                                                             }
                                                         default:
-                                                            var reqChat = GetUserChat(message.Text);
-                                                            await SetSchedule();
+                                                            Chat reqChat = GetUserChat(message.Text);
+                                                            await SetSchedule(reqChat);
 
                                                             await SendMessage(chat, "Расписание праздников установлено");
                                                             //await bot.SendTextMessageAsync(chat, "Я понимаю только определенные команды🥺\n/help", replyToMessageId: message.MessageId);
@@ -236,13 +239,15 @@ namespace Pozdravleniya_s_prazdnikami_bot
                                 case ChatType.Supergroup: //супергруппы
                                 case ChatType.Group: //группы
                                     {
-
                                         switch (message.Type)
                                         {
                                             case MessageType.Text:
                                                 {
-                                                   
+                                                    Console.WriteLine("//Запись групповых чатов в список");
                                                     botChats.Add(chat);
+                                                    Console.WriteLine($"В список чатов добавлен новый чат: {chat.Title}, {chat.Id}");
+                                                    foreach(Chat item in botChats)
+                                                        Console.WriteLine($"{item.Title}, {item.Id}");
                                                     Console.WriteLine($"Получено сообщение \"{message.Text}\" в чате {chat.Id} от пользователя {user.Username}.");
                                                     await bot.SendTextMessageAsync(chat, "Эту и другие команды нужно отправлять мне личным сообщением", replyToMessageId: message.MessageId);
                                                     break;
