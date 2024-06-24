@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Pozdravleniya_s_prazdnikami_bot.Host">
+    <Position X="3" Y="2.25" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Pozdravleniya_s_prazdnikami_bot.Host.ExcelData">
+        <TypeIdentifier>
+          <NewMemberFileName>Host.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAACAAAgAAAAAAAAQAAAgAAQAAAAA=</HashCode>
+      <FileName>Host.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pozdravleniya_s_prazdnikami_bot.JsonFile">
+    <Position X="5.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAAAEAAAAAAAAAAAAAAAAAAIAAABAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pozdravleniya_s_prazdnikami_bot.Program">
+    <Position X="7.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
